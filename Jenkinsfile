@@ -15,9 +15,9 @@ pipeline {
             }
         }
 
-        stage('Test Docker Access') {
+        stage('Build Docker Image') {
             steps {
-                bat 'docker --version'
+                bat 'docker build -t solar-system-canvas-simulation:%BUILD_NUMBER% .'
             }
         }
 
