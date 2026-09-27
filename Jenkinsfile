@@ -2,10 +2,18 @@ pipeline {
     agent any
 
     stages {
-        stage('Test Jenkins') {
+
+        stage('Install Dependencies') {
             steps {
-                echo 'Solar System CI/CD Pipeline connected to GitHub!'
+                bat 'npm ci'
             }
         }
+
+        stage('Build Application') {
+            steps {
+                bat 'npm run build'
+            }
+        }
+
     }
 }
