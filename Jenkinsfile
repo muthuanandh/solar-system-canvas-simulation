@@ -6,6 +6,14 @@ pipeline {
     }
 
     stages {
+       stage('Test AWS Access') {
+    steps {
+        bat '''
+            whoami
+            aws sts get-caller-identity
+        '''
+    }
+}
 
         stage('Install Dependencies') {
             steps {
