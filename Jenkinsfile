@@ -10,7 +10,7 @@ pipeline {
     steps {
         bat '''
             whoami
-            aws sts get-caller-identity
+            "C:\Program Files\Amazon\AWSCLIV2\aws.exe" sts get-caller-identity
         '''
     }
 }
