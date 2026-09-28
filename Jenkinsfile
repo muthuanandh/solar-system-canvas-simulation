@@ -6,14 +6,24 @@ pipeline {
     }
 
     stages {
-       stage('Test AWS Access') {
-    steps {
-        bat '''
-            whoami
-            "C:/Program Files/Amazon/AWSCLIV2/aws.exe" sts get-caller-identity
-        '''
-    }
-}
+
+        stage('Test AWS Access') {
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'jenkins-aws-cli',
+                        usernameVariable: 'AWS_ACCESS_KEY_ID',
+                        passwordVariable: 'AWS_SECRET_ACCESS_KEY'
+                    )
+                ]) {
+                    bat '''
+                        whoami
+                        set AWS_DEFAULT_REGION=us-east-1
+                        "C:/Program Files/Amazon/AWSCLIV2/aws.exe" sts get-caller-identity
+                    '''
+                }
+            }
+        }
 
         stage('Install Dependencies') {
             steps {
