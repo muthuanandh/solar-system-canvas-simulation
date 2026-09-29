@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: solar-system
+  namespace: default
+  labels:
+    app: solar-system
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  selector:
+    matchLabels:
+      app: solar-system
+  template:
+    metadata:
+      labels:
+        app: solar-system
+    spec:
+      containers:
+        - name: solar-system-canvas-simulation
+          image: muthuanandhh/solar-system-canvas-simulation:28
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
