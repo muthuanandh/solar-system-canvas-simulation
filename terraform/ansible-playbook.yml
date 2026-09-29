@@ -1,0 +1,24 @@
+---
+- name: Configure Solar System Server
+  hosts: solar
+  become: yes
+
+  tasks:
+
+    - name: Check Docker installation
+      shell: docker --version
+      register: docker_version
+      ignore_errors: yes
+
+    - name: Display Docker version
+      debug:
+        var: docker_version.stdout
+
+    - name: Create Solar System application configuration
+      copy:
+        content: |
+          APPLICATION_NAME=Solar System Canvas Simulation
+          APPLICATION_ENVIRONMENT=production
+          APPLICATION_PORT=80
+        dest: /etc/solar-system.conf
+        mode: '0644'
