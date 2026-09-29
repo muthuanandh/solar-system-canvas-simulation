@@ -56,5 +56,28 @@ pipeline {
             }
         }
 
+        stage('Deploy to Kubernetes') {
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'jenkins-aws-cli',
+                        usernameVariable: 'AWS_ACCESS_KEY_ID',
+                        passwordVariable: 'AWS_SECRET_ACCESS_KEY'
+                    )
+                ]) {
+                    bat '''
+                        set AWS_DEFAULT_REGION=us-east-1
+                        set KUBECONFIG=%WORKSPACE%\\kubeconfig
+
+                        "C:/Program Files/Amazon/AWSCLIV2/aws.exe" eks update-kubeconfig --region us-east-1 --name solar-system-eks --kubeconfig "%WORKSPACE%\\kubeconfig"
+
+                        kubectl set image deployment/solar-system solar-system-canvas-simulation=%DOCKER_IMAGE%:%BUILD_NUMBER%
+
+                        kubectl rollout status deployment/solar-system --timeout=180s
+                    '''
+                }
+            }
+        }
+
     }
 }
