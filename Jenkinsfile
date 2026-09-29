@@ -45,28 +45,13 @@ pipeline {
 
         stage('Push Docker Image') {
             steps {
-                withCredentials([
-                    usernamePassword(
-                        credentialsId: 'dockerhub-solar-jenkins-v2',
-                        usernameVariable: 'DOCKER_USERNAME',
-                        passwordVariable: 'DOCKER_PASSWORD'
-                    )
-                ]) {
-                    powershell '''
-                        $env:DOCKER_PASSWORD | docker login -u $env:DOCKER_USERNAME --password-stdin
-
-                        if ($LASTEXITCODE -ne 0) {
-                            exit 1
-                        }
-
-                        docker push "$env:DOCKER_IMAGE`:$env:BUILD_NUMBER"
-
-                        if ($LASTEXITCODE -ne 0) {
-                            exit 1
-                        }
-
-                        docker logout
-                    '''
+                script {
+                    docker.withRegistry(
+                        'https://index.docker.io/v1/',
+                        'dockerhub-solar-jenkins-v2'
+                    ) {
+                        bat 'docker push %DOCKER_IMAGE%:%BUILD_NUMBER%'
+                    }
                 }
             }
         }
